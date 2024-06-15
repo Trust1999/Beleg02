@@ -11,54 +11,52 @@ public class main {
 	public static void main(String[] args) {
 		
 		int ladungsAnzahl = 40 - zufall.nextInt(11);
-		String[] ladung = WarenErstellung(ladungsAnzahl);
+		List<String> ladung = new LinkedList<>();
+		WarenErstellung(ladung, ladungsAnzahl);
 		
 		int conatainerAnzahl = 15 - zufall.nextInt(6);
 		List<Abteilung> container = new LinkedList<>();
 		ContainerErstellung(container, conatainerAnzahl);
 		
-		for(String l: ladung) {
-			System.out.println(l);
-		}
-		
 		List<Ladung> beladeneContainer = new LinkedList<>();
-		ContainerBeladen(container, beladeneContainer, ladung);
+		ContainerBeladen(container, beladeneContainer, ladung);	
 		
-		System.out.println("Anzahl der Container(" + conatainerAnzahl + ")");
-		System.out.println("Anzahl der Waren (" + ladungsAnzahl + "), Inhalt:");
-		for(String l: ladung) {
-			System.out.println(l);
-		}
-		
+		System.out.println("Container(" + conatainerAnzahl + "):");
 		for(int i = 0; i < container.size(); i++) {
 			 Abteilung a = container.get(i);
 			 Ladung l = beladeneContainer.get(i);
 			System.out.println(a.getArt() + " - " + a.getType()  + " - " + a.getID());
 			System.out.println("Beladen mit: " + l.getInhalt());
 			}
+		
+		System.out.println("Waren gesamt (" + ladungsAnzahl + ") übrige Waren(" + ladung.size() + "):");
+		for(String l: ladung) {
+			System.out.println(l);
+		}
 	}
 
-	private static void ContainerBeladen(List<Abteilung> co, List<Ladung> bc, String[] la) {
-		for(Abteilung a: co) { 
-			for(int i = 0; i < la.length; i++) {
-				if(WelcherInhalt(a.getKann(), la[i])) {
-					((Ladung) a).setInhalt(la[i]);
-					bc.add((Ladung) a);
-					la[i] = "0";
-					break;
-				}
-				else {
-					((Ladung) a).setInhalt("leer");
-					bc.add((Ladung) a);			
-				}
-			}
-		}
+	private static void ContainerBeladen(List<Abteilung> co, List<Ladung> bc, List<String> la) {
+		for (Abteilung a : co) {
+			boolean beladen = false;
+	        for (int i = 0; i < la.size(); i++) {
+	        	if (WelcherInhalt(a.getKann(), la.get(i))) {
+	        		((Ladung) a).setInhalt(la.get(i));
+	                bc.add((Ladung) a);
+	                la.remove(i);
+	                beladen = true;
+	                break; // Exit the loop once the item is loaded
+	            }
+	        }
+	        if (!beladen) {
+	        	((Ladung) a).setInhalt("leer");
+	            bc.add((Ladung) a);
+	        }
+	    }
 	}
 
 	private static boolean WelcherInhalt(String[] k, String l) {
 	    for (String c : k) {
 	    	if (c.equals(l)) {
-	    		System.out.println(c +" "+l);
 	    		return true;
 	    	}
         }
@@ -71,17 +69,15 @@ public class main {
 		}
 	}
 
-	private static String[] WarenErstellung(int la) {
-		String[] alleWaren = {"Kisten", "Packete", "Europaletten", "Obst", "Gemüse",
+	private static void WarenErstellung(List<String> ladung, int la) {
+		String[] alleWaren = {"Kisten", "Pakete", "Europaletten", "Obst", "Gemüse",
 							  "Fleich", "Wein", "Fruchtsaft", "Dünnsäure", 
 							  "Natron-Wasserglas", "Uranbrenstäbe", "MOX-Kugeln", 
 							  "Stickstoff", "Ethin(Acetylen)"};
-		String lieferWare[] = new String[la];
 
 		for(int i = 0; i < la ; i++) {
-			lieferWare[i] = alleWaren[zufall.nextInt(alleWaren.length)];
+			ladung.add(alleWaren[zufall.nextInt(alleWaren.length)]);
 		}
-		return lieferWare;
 	}
 
 }

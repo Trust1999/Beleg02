@@ -24,7 +24,4 @@ public class LangerContainer extends StandartContainer implements Ladung{
 	public String getInhalt() {
 		return this.inhalt;
 	}
-	
-	
-
 }

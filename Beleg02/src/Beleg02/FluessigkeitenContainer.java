@@ -13,8 +13,14 @@ public class FluessigkeitenContainer extends SpezialContainer implements Ladung{
 
 	@Override
 	public String getID() {
-		return "10-SF-" + id + "-FG-4";
-		//return "10F-SD-" + id + "-FG-4"
+		if(inhalt.equals("Wein") | inhalt.equals("Fruchtsaft"))
+		{
+			return "10-SF-" + id + "-FG-4";
+		}
+		else {
+			return "10F-SD-" + id + "-FG-4";
+		}
+		
 	}
 	
 	@Override
